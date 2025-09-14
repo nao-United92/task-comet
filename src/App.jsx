@@ -1,28 +1,24 @@
 import { createBrowserRouter, Link, Outlet, RouterProvider } from "react-router-dom";
+import { AppLayout } from "./components/AppLayout";
 
 const router = createBrowserRouter([
   {
-    element: <Outlet />,
+    element: (
+      // AppLayout で Outlet をラップ
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
+    ),
     children: [
       {
         // タスク一覧画面
         path: "/",
-        element: (
-          <div>
-            <h1>タスク一覧</h1>
-            <Link to="trash">ゴミ箱へ</Link>
-          </div>
-        ),
+        element: <div>タスク一覧</div>,
       },
       {
         // ゴミ箱画面
         path: "trash",
-        element: (
-          <div>
-            <h1>ゴミ箱</h1>
-            <Link to="/">タスク一覧へ</Link>
-          </div>
-        ),
+        element: <div>ゴミ箱</div>,
       },
     ],
   },
