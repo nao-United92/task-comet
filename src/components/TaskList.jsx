@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateTaskForm } from "./CreateTaskForm";
 import { TaskItem } from "./TaskItem";
 
 export function TaskList() {
   // タスク一覧の状態を管理
-  const [taskList, setTaskList] = useState([]);
+  const [taskList, setTaskList] = useState(() => {
+    // ローカルストレージから "taskList" のデータを取得
+    const taskListStorage = localStorage.getItem("taskList");
+    // ローカルストレージにデータがあれば、それをパースして返し、なければからの配列を返す
+    return JSON.parse(taskListStorage ?? "[]");
+  });
+
+  useEffect(() => {
+    localStorage.setItem("taskList", JSON.stringify(taskList));
+  }, [taskList]);
 
   // 新しいタスクを追加
   const createTask = (title) => {
