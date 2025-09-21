@@ -3,7 +3,7 @@ import { useLocalStorageState } from "./useLocalStorageState";
 export function useTasks() {
   const [taskList, setTaskList] = useLocalStorageState("tasks", []);
 
-  const activeTaskList = taskList.filter(({ status }) => status === "trashed");
+  const activeTaskList = taskList.filter(({ status }) => status === "notStarted");
 
   // タスクを作成する
   const createTask = (title) => {
@@ -12,6 +12,9 @@ export function useTasks() {
         id: Date.now(),
         title,
         status: "notStarted",
+        priority: "medium",
+        subtasks: [],
+        tags: [], // タグ配列を追加
       };
       return [...prevTaskList, newTask];
     });
@@ -21,6 +24,60 @@ export function useTasks() {
   const updateTask = (id, updatedTask) => {
     setTaskList((prevTaskList) => {
       return prevTaskList.map((task) => (task.id === id ? { ...task, ...updatedTask } : task));
+    });
+  };
+
+  // --- サブタスク操作関数 ---
+
+  // サブタスクを追加する
+  const addSubtask = (parentId, subtaskTitle) => {
+    setTaskList((prevTaskList) => {
+      return prevTaskList.map((task) => {
+        if (task.id === parentId) {
+          const newSubtask = {
+            id: Date.now(),
+            title: subtaskTitle,
+            status: "notStarted",
+          };
+          return {
+            ...task,
+            subtasks: [...(task.subtasks || []), newSubtask],
+          };
+        }
+        return task;
+      });
+    });
+  };
+
+  // サブタスクを更新する
+  const updateSubtask = (parentId, subtaskId, updates) => {
+    setTaskList((prevTaskList) => {
+      return prevTaskList.map((task) => {
+        if (task.id === parentId) {
+          return {
+            ...task,
+            subtasks: (task.subtasks || []).map((subtask) =>
+              subtask.id === subtaskId ? { ...subtask, ...updates } : subtask,
+            ),
+          };
+        }
+        return task;
+      });
+    });
+  };
+
+  // サブタスクを削除する
+  const deleteSubtask = (parentId, subtaskId) => {
+    setTaskList((prevTaskList) => {
+      return prevTaskList.map((task) => {
+        if (task.id === parentId) {
+          return {
+            ...task,
+            subtasks: (task.subtasks || []).filter((subtask) => subtask.id !== subtaskId),
+          };
+        }
+        return task;
+      });
     });
   };
 
@@ -48,5 +105,9 @@ export function useTasks() {
     trashedTaskList,
     deleteTask,
     deleteAllTrashedTasks,
+    // サブタスク用関数をエクスポート
+    addSubtask,
+    updateSubtask,
+    deleteSubtask,
   };
 }
