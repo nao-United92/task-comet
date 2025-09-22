@@ -82,7 +82,9 @@ export function useTasks() {
   };
 
   // ゴミ箱のタスク一覧
-  const trashedTaskList = taskList.filter(({ status }) => status === "trashed");
+  const trashedTaskList = taskList.filter(
+    ({ status }) => status === "trashed" || status === "completed",
+  );
 
   // タスクを削除する
   const deleteTask = (id) => {
@@ -94,7 +96,9 @@ export function useTasks() {
   // ゴミ箱のタスクを全て削除する
   const deleteAllTrashedTasks = () => {
     setTaskList((prevTaskList) => {
-      return prevTaskList.filter((task) => task.status !== "trashed");
+      return prevTaskList.filter(
+        (task) => task.status !== "trashed" && task.status !== "completed",
+      );
     });
   };
 

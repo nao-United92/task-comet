@@ -181,7 +181,7 @@ export function TaskItem({
         <button
           type="button"
           className="rounded bg-gray-200 p-2 transition-colors hover:bg-gray-300"
-          onClick={() => onChange(task.id, { status: "trash" })}
+          onClick={() => onChange(task.id, { status: "trashed" })}
           aria-label={`タスク「${task.title}」をゴミ箱へ移動する`}
         >
           <Trash2 className="size-5 text-gray-500" />
